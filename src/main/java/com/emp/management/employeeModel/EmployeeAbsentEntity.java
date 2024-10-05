@@ -17,19 +17,17 @@ import lombok.NoArgsConstructor;
 public class EmployeeAbsentEntity {
 
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	private String employeeName;
-	@Column(unique = true,nullable = false)
-	private String employeeId;
-	
-	@Column(name = "leaveReason")
-	private String leaveReason;
+    private String employeeName;
+    private String employeeId;
 
-	@Temporal(TemporalType.DATE)
-	private Date emloyeeAbsentDate;
+    private String leaveReason;
+
+    @Temporal(TemporalType.DATE)
+    private Date emloyeeAbsentDate;
 
 
 }

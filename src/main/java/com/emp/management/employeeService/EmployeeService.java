@@ -21,7 +21,9 @@ public interface EmployeeService {
 
     EmployeeResponse addEmployeeAttendanceDetails(String employeeId,String attendanceType,String leaveReason);
 
+/*
     EmployeeAbsentEntity addEmployeeAbsentDetails(EmployeeAbsentEntity employeeAbsentEntity);
+*/
 
     EmployeeResponse getEmployeeBySearch(String anyDetails);
 

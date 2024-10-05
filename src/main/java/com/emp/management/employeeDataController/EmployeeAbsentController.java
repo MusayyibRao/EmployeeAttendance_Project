@@ -38,12 +38,12 @@ public class EmployeeAbsentController {
 
 //	_____________________________________1___________________________________________
 
-	@PostMapping("/EmployeeAbsent")
+	/*@PostMapping("/EmployeeAbsent")
 	public EmployeeAbsentEntity employeeAbsent(@RequestBody EmployeeAbsentEntity employeeAbsentEntity) {
 		EmployeeAbsentEntity employeeAbsent = employeeService.addEmployeeAbsentDetails(employeeAbsentEntity);
 		return employeeAbsent;
 	}
-
+*/
 //	_____________________________________2___________________________________________
 
 //	@GetMapping("{pageNo}/{pageSize}")

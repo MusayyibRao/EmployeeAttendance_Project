@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.sql.rowset.serial.SerialBlob;
 import java.sql.Blob;
+import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
@@ -181,10 +182,10 @@ public class EmployeeServiceImp implements EmployeeService {
             if (employeeEntity != null) {
                 EmployeeAttendanceDto employeeAttendanceDto = new EmployeeAttendanceDto();
                 employeeAttendanceDto.setEmployeeId(employeeId);
-//                employeeAttendanceDto.setId(employeeEntity.getId());
                 employeeAttendanceDto.setEmployeeName(employeeEntity.getEmployeeFirstName() + " " + employeeEntity.getEmployeeLastName());
                 Date date = new Date();
                 employeeAttendanceDto.setAttendanceDate(DatePattern.formatDate(date));
+
                 if (attendanceType.equalsIgnoreCase("P")) {
                     employeeAttendanceDto.setEntryTime(DatePattern.timeFormat(date));
                     employeeAttendanceDto.setAttendanceType(EmployeeCommon.ATTENDANCE_PRESENT);
@@ -201,12 +202,7 @@ public class EmployeeServiceImp implements EmployeeService {
                     } else {
                         employeeAbsentDetailsDto.setLeaveReason("No Reason");
                     }
-                    EmployeeAbsentEntity employeeAbsent = EmployeeCommon.convertEmpAbsentDtoToEmpAbsentEntity(employeeAbsentDetailsDto);
-                    if (employeeAbsentRepository.ExistsByAbsentDate(employeeAbsent.getEmloyeeAbsentDate())) {
-                        throw new RuntimeException("Employee Attendance Recorded Already !");
-                    }
-                    EmployeeAbsentEntity employeeAbsentSave = employeeAbsentRepository.save(employeeAbsent);
-                    EmployeeAbsentDetailsDto employeeAbsentDetailsDto1 = EmployeeCommon.convertEmpAbsentEntityToEmpAbsentDto(employeeAbsentSave);
+                    EmployeeAbsentDetailsDto employeeAbsentDetailsDto1 = getAttendanceData(employeeAbsentDetailsDto);
                     response.setEmployeeAbsentDetails(employeeAbsentDetailsDto1);
                 }
                 EmployeeAttendanceEntity employeeAttendanceEntity = EmployeeCommon.convertEmployeeAttendanceDtoToEmployeeAttendanceEntity(employeeAttendanceDto);
@@ -247,10 +243,10 @@ public class EmployeeServiceImp implements EmployeeService {
         return response;
     }
 
-    @Override
+    /*@Override
     public EmployeeAbsentEntity addEmployeeAbsentDetails(EmployeeAbsentEntity employeeAbsentEntity) {
         return null;
-    }
+    }*/
 
 
     @Override
@@ -261,6 +257,18 @@ public class EmployeeServiceImp implements EmployeeService {
     @Override
     public EmployeeMonthlyStatusEntity updateEmployeeMonthlyDetails(EmployeeMonthlyStatusEntity employeeMonthlyStatusEntity) {
         return null;
+    }
+
+
+    public EmployeeAbsentDetailsDto getAttendanceData(EmployeeAbsentDetailsDto employeeAbsentDetailsDto) throws ParseException {
+
+        EmployeeAbsentEntity employeeAbsent = EmployeeCommon.convertEmpAbsentDtoToEmpAbsentEntity(employeeAbsentDetailsDto);
+        if (employeeAbsentRepository.ExistsByAbsentDate(employeeAbsent.getEmloyeeAbsentDate()) || employeeAttendanceDataRepository.ExistsByAttendanceDate(employeeAbsent.getEmloyeeAbsentDate())) {
+            throw new RuntimeException("Employee Attendance Recorded Already !");
+        }
+        EmployeeAbsentEntity employeeAbsentSave = employeeAbsentRepository.save(employeeAbsent);
+        EmployeeAbsentDetailsDto employeeAbsentDetailsDto1 = EmployeeCommon.convertEmpAbsentEntityToEmpAbsentDto(employeeAbsentSave);
+        return employeeAbsentDetailsDto1;
     }
 
 
