@@ -6,6 +6,8 @@ import com.emp.management.employeeModel.EmployeeAbsentEntity;
 import com.emp.management.employeeModel.EmployeeMonthlyStatusEntity;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.text.ParseException;
+
 
 public interface EmployeeService {
 
@@ -31,4 +33,5 @@ public interface EmployeeService {
 
     EmployeeMonthlyStatusEntity updateEmployeeMonthlyDetails(EmployeeMonthlyStatusEntity employeeMonthlyStatusEntity);
 
+    EmployeeResponse employeeExitTime(String employeeId) throws ParseException;
 }

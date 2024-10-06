@@ -1,5 +1,6 @@
 package com.emp.management.employeeDataController;
 
+import java.text.ParseException;
 import java.util.Map;
 
 import com.emp.management.response.EmployeeResponse;
@@ -38,17 +39,17 @@ public class EmployeeAttendanceController {
 
     @PostMapping("/employeeAttendance")
     public ResponseEntity<EmployeeResponse> employeeAttendance(@RequestParam("employeeId") String employeeId, @RequestParam("attendanceType") String attendanceType, @RequestParam("leaveReason") String leaveReason) {
-        EmployeeResponse response = employeeService.addEmployeeAttendanceDetails(employeeId,attendanceType,leaveReason);
+        EmployeeResponse response = employeeService.addEmployeeAttendanceDetails(employeeId, attendanceType, leaveReason);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 
-   /* @GetMapping("{pageNo}/{pageSize}")
-    public List<EmployeeAttendanceEntity> getAttendanceEmployeeData(@PathVariable int pageNo,
-                                                                    @PathVariable int pageSize) {
+    /*____________________________________________EMPLOYEE EXIT TIME API _________________________________________*/
 
-//		List<EmployeeRegistrationEntityModel> allEmployeeList =  employeeService.EmployeeAllEmployeeList();
-        return iRegisterService.findEmployeePresentPage(pageNo, pageSize);
-    }*/
+    @PostMapping("/employeeExitTime")
+    public ResponseEntity<EmployeeResponse> employeeExitTime(@RequestParam("employeeId") String employeeId) throws ParseException {
+        EmployeeResponse response = employeeService.employeeExitTime(employeeId);
+        return ResponseEntity.status(response.getStatusCode()).body(response);
+    }
 
     /*__________________________________________SEARCHING EMPLOYEE ATTENDANCE API______________________________________*/
 

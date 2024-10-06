@@ -22,7 +22,6 @@ public class EmployeeAttendanceEntity {
 	private String employeeName;
 //	@Column(unique = true,nullable = false)
 	private String employeeId;
-	@Column(unique = true,nullable = false)
 	@Temporal(TemporalType.DATE)
 	private Date attendanceDate;
 	@Temporal(TemporalType.TIME)

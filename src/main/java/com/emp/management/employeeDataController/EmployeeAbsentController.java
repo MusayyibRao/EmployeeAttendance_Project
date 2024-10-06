@@ -36,23 +36,6 @@ public class EmployeeAbsentController {
 	@Autowired
 	private BulkDataUploadService bulkDataUploadService;
 
-//	_____________________________________1___________________________________________
-
-	/*@PostMapping("/EmployeeAbsent")
-	public EmployeeAbsentEntity employeeAbsent(@RequestBody EmployeeAbsentEntity employeeAbsentEntity) {
-		EmployeeAbsentEntity employeeAbsent = employeeService.addEmployeeAbsentDetails(employeeAbsentEntity);
-		return employeeAbsent;
-	}
-*/
-//	_____________________________________2___________________________________________
-
-//	@GetMapping("{pageNo}/{pageSize}")
-//	public List<EmployeeAbsentDetails> getAllEmployee(@PathVariable int pageNo, @PathVariable int pageSize) {
-//		return iRegisterService.findEmployeeAbsentPage(pageNo, pageSize);
-//	}
-
-//	_____________________________________3___________________________________________
-	
 	@GetMapping("/absentEmployees")
 	public List<EmployeeAbsentEntity> absentEmployee(
 			@RequestParam(required = false, name = "employeeid") String employeeid,

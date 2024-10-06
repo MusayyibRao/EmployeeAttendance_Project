@@ -206,13 +206,13 @@ public class EmployeeServiceImp implements EmployeeService {
                     response.setEmployeeAbsentDetails(employeeAbsentDetailsDto1);
                 }
                 EmployeeAttendanceEntity employeeAttendanceEntity = EmployeeCommon.convertEmployeeAttendanceDtoToEmployeeAttendanceEntity(employeeAttendanceDto);
-                System.out.println("dateFormat: " + employeeAttendanceEntity.getAttendanceDate());
-                System.out.println("existsBy :" + employeeAttendanceDataRepository.ExistsByAttendanceDate(employeeAttendanceEntity.getAttendanceDate()));
-                if (employeeAttendanceDataRepository.ExistsByAttendanceDate(employeeAttendanceEntity.getAttendanceDate())) {
+                // System.out.println("dateFormat: " + employeeAttendanceEntity.getAttendanceDate());
+                // System.out.println("existsBy :" + employeeAttendanceDataRepository.ExistsByAttendanceDate(employeeAttendanceEntity.getAttendanceDate()));
+                if (employeeAttendanceDataRepository.existsByAttendanceDate(employeeAttendanceEntity.getAttendanceDate(), employeeId)) {
                     throw new RuntimeException("Employee Attendance Recorded Already !");
                 }
                 EmployeeAttendanceEntity saveAttendance = employeeAttendanceDataRepository.save(employeeAttendanceEntity);
-                System.out.println("saveAtt:: " + saveAttendance);
+                // System.out.println("saveAtt:: " + saveAttendance);
                 EmployeeAttendanceDto attendanceDto = EmployeeCommon.convertEmployeeAttendanceEntityToEmployeeAttendanceDto(saveAttendance);
                 if (attendanceType.equalsIgnoreCase("P")) {
                     response.setEmployeeAttendanceDetails(attendanceDto);
@@ -263,12 +263,52 @@ public class EmployeeServiceImp implements EmployeeService {
     public EmployeeAbsentDetailsDto getAttendanceData(EmployeeAbsentDetailsDto employeeAbsentDetailsDto) throws ParseException {
 
         EmployeeAbsentEntity employeeAbsent = EmployeeCommon.convertEmpAbsentDtoToEmpAbsentEntity(employeeAbsentDetailsDto);
-        if (employeeAbsentRepository.ExistsByAbsentDate(employeeAbsent.getEmloyeeAbsentDate()) || employeeAttendanceDataRepository.ExistsByAttendanceDate(employeeAbsent.getEmloyeeAbsentDate())) {
+        if (employeeAbsentRepository.ExistsByAbsentDate(employeeAbsent.getEmloyeeAbsentDate(), employeeAbsent.getEmployeeId()) || employeeAttendanceDataRepository.existsByAttendanceDate(employeeAbsent.getEmloyeeAbsentDate(), employeeAbsent.getEmployeeId())) {
             throw new RuntimeException("Employee Attendance Recorded Already !");
         }
         EmployeeAbsentEntity employeeAbsentSave = employeeAbsentRepository.save(employeeAbsent);
         EmployeeAbsentDetailsDto employeeAbsentDetailsDto1 = EmployeeCommon.convertEmpAbsentEntityToEmpAbsentDto(employeeAbsentSave);
         return employeeAbsentDetailsDto1;
+    }
+
+    @Override
+    public EmployeeResponse employeeExitTime(String employeeId) throws ParseException {
+        EmployeeResponse response = new EmployeeResponse();
+        try {
+            Date date = new Date();
+            String dateInString = DatePattern.formatDate(date);
+            Date dateFormatted = DatePattern.formatInDate(dateInString);
+            EmployeeAttendanceEntity employeeAttendance = employeeAttendanceDataRepository.getEmployeeDataByDate(dateFormatted, employeeId).orElseThrow(() -> new RuntimeException("Employee not exists !"));
+            if (employeeAttendance != null) {
+                EmployeeAttendanceDto employeeAttendanceDto = new EmployeeAttendanceDto();
+                employeeAttendanceDto.setId(employeeAttendance.getId());
+                employeeAttendanceDto.setEmployeeName(employeeAttendance.getEmployeeName());
+                employeeAttendanceDto.setEmployeeId(employeeId);
+                employeeAttendanceDto.setAttendanceDate(dateInString);
+                employeeAttendanceDto.setEntryTime(DatePattern.timeFormat(employeeAttendance.getEntryTime()));
+                employeeAttendanceDto.setExitTime(DatePattern.timeFormat(date));
+                employeeAttendanceDto.setAttendanceType(employeeAttendance.getAttendanceType());
+                EmployeeAttendanceEntity employeeAttendanceConvert = EmployeeCommon.convertEmployeeAttendanceDtoToEmployeeAttendanceEntity(employeeAttendanceDto);
+                if (employeeAttendanceDataRepository.existsByAttendanceExitTime(employeeAttendanceConvert.getAttendanceDate(), employeeId) != null) {
+                    throw new RuntimeException("Employee Already Exit !");
+                }
+                EmployeeAttendanceEntity employeeAttendanceUpdate = null;
+                if (employeeAttendanceConvert.getAttendanceType().equalsIgnoreCase(EmployeeCommon.ATTENDANCE_PRESENT)) {
+                    employeeAttendanceUpdate = employeeAttendanceDataRepository.save(employeeAttendanceConvert);
+                } else {
+                    throw new RuntimeException("Employee Not Present Today !");
+                }
+                EmployeeAttendanceDto employeeAttendanceDto1 = EmployeeCommon.convertEmployeeAttendanceEntityToEmployeeAttendanceDto(employeeAttendanceUpdate);
+                response.setStatusCode(200);
+                response.setMessage("Employee Exit Successfully !");
+                response.setEmployeeAttendanceDetails(employeeAttendanceDto1);
+            }
+        } catch (Exception e) {
+            response.setStatusCode(400);
+            response.setMessage(e.getMessage());
+        }
+
+        return response;
     }
 
 
