@@ -11,10 +11,7 @@ import com.emp.management.employeeModelRepository.EmployeeAttendanceDataReposito
 import com.emp.management.employeeModelRepository.EmployeeMonthlyStatusRepository;
 import com.emp.management.employeeModelRepository.EmployeeRegistrationModelRepository;
 import com.emp.management.request.EmployeeUpdateRequest;
-import com.emp.management.response.EmployeeAbsentDetailsDto;
-import com.emp.management.response.EmployeeAttendanceDto;
-import com.emp.management.response.EmployeeDto;
-import com.emp.management.response.EmployeeResponse;
+import com.emp.management.response.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -243,20 +240,50 @@ public class EmployeeServiceImp implements EmployeeService {
         return response;
     }
 
-    /*@Override
-    public EmployeeAbsentEntity addEmployeeAbsentDetails(EmployeeAbsentEntity employeeAbsentEntity) {
-        return null;
-    }*/
-
 
     @Override
-    public EmployeeMonthlyStatusEntity addEmployeeMonthlyAttendanceDetails(EmployeeMonthlyStatusEntity employeeMonthlyStatusEntity) {
-        return null;
+    public EmployeeResponse addEmployeeMonthlyAttendanceDetails(String empId, String month) {
+        EmployeeResponse response = new EmployeeResponse();
+        try {
+            int mon = Integer.parseInt(month);
+            if (mon > 12 || mon < 1) {
+                throw new RuntimeException("Please enter valid month");
+            }
+            List<EmployeeAttendanceEntity> employeeAttendance = employeeAttendanceDataRepository.getEmployeeMonthlyData(empId, month);
+            System.out.println("employee_attendance_data: " + employeeAttendance);
+            EmployeeMonthlyStatusEntity employeeMonthlyStatusEntity = calculateEmployeeMonthlyData(employeeAttendance);
+            if (employeeMonthlyStatusRepository.existsByEmployeeId(empId)) {
+                throw new RuntimeException("Employee Monthly Data Already Exist !");
+            }
+            EmployeeMonthlyStatusEntity saveMonthlyData = employeeMonthlyStatusRepository.save(employeeMonthlyStatusEntity);
+            EmployeeMonthlyAttendanceData employeeMonthlyAttendanceData = EmployeeCommon.convertEmployeeMonthlyEntityToDto(saveMonthlyData);
+            response.setStatusCode(200);
+            response.setMessage("Save Employee Monthly Attendance Data");
+            response.setEmployeeMonthlyData(employeeMonthlyAttendanceData);
+        } catch (Exception e) {
+            response.setStatusCode(400);
+            response.setMessage(e.getMessage());
+        }
+
+        return response;
     }
 
+
     @Override
-    public EmployeeMonthlyStatusEntity updateEmployeeMonthlyDetails(EmployeeMonthlyStatusEntity employeeMonthlyStatusEntity) {
-        return null;
+    public EmployeeResponse getEmployeeMonthlyAttendanceDetails(String empId, String month) {
+        EmployeeResponse response = new EmployeeResponse();
+        try {
+            EmployeeMonthlyStatusEntity employeeMonthlyStatusEntity = employeeMonthlyStatusRepository.findByEmployeeIdAndMonth(empId, month).orElseThrow(() -> new RuntimeException("Employee Attendance Monthly Not Exist !"));
+            System.out.println("employeeMonthlyStatusEntity:" + employeeMonthlyStatusEntity);
+            EmployeeMonthlyAttendanceData employeeMonthlyAttendanceData = EmployeeCommon.convertEmployeeMonthlyEntityToDto(employeeMonthlyStatusEntity);
+            response.setStatusCode(200);
+            response.setMessage("successfully !");
+            response.setEmployeeMonthlyData(employeeMonthlyAttendanceData);
+        } catch (Exception e) {
+            response.setStatusCode(400);
+            response.setMessage(e.getMessage());
+        }
+        return response;
     }
 
 
@@ -311,5 +338,62 @@ public class EmployeeServiceImp implements EmployeeService {
         return response;
     }
 
+    private EmployeeMonthlyStatusEntity calculateEmployeeMonthlyData(List<EmployeeAttendanceEntity> employeeAttendance) throws ParseException {
+        EmployeeMonthlyStatusEntity employeeMonthlyStatusEntity = new EmployeeMonthlyStatusEntity();
+        int presentEmp = 0;
+        int absentEmp = 0;
+        int totalWorkingDays = 0;
+        Date monthlyDate = null;
+        String empId = null;
+        int wfh = 0;
+        for (EmployeeAttendanceEntity emp : employeeAttendance) {
+            if (emp.getAttendanceType().equalsIgnoreCase(EmployeeCommon.ATTENDANCE_PRESENT)) {
+                presentEmp++;
+                totalWorkingDays++;
+            }
+            if (emp.getAttendanceType().equalsIgnoreCase(EmployeeCommon.ATTENDANCE_ABSENT)) {
+                absentEmp++;
+            }
+            if (empId == null) {
+                empId = emp.getEmployeeId();
+            }
+            if (monthlyDate == null) {
+
+                monthlyDate = emp.getAttendanceDate();
+            }
+
+        }
+        employeeMonthlyStatusEntity.setEmployeeId(empId);
+        employeeMonthlyStatusEntity.setPresentNumber(String.valueOf(presentEmp));
+        employeeMonthlyStatusEntity.setAbsentNumber(String.valueOf(absentEmp));
+        employeeMonthlyStatusEntity.setLeaveNumber(String.valueOf(absentEmp));
+        employeeMonthlyStatusEntity.setTotalWorkingDays(String.valueOf(totalWorkingDays));
+        employeeMonthlyStatusEntity.setWfhNumber(String.valueOf(wfh));
+//        String dateInStringFormat = DatePattern.formatDate(monthlyDate);
+//        System.out.println("dateInStringFormat: "+dateInStringFormat);
+        System.out.println("---------------------------------------------");
+        System.out.println("getMonth: " + DatePattern.getMonthYearFormat(monthlyDate));
+        String dateInStringFormat = DatePattern.getMonthYearFormat(monthlyDate);
+        employeeMonthlyStatusEntity.setMonthYear(DatePattern.getMonthYearFormatInDate(dateInStringFormat));
+
+        return employeeMonthlyStatusEntity;
+
+    }
+
+    @Override
+    public EmployeeResponse getAllEmployeeMonthlyAttendanceDetails() {
+        EmployeeResponse response = new EmployeeResponse();
+        try {
+            List<EmployeeMonthlyStatusEntity> employeeMonthlyStatusEntityList = employeeMonthlyStatusRepository.findAll();
+            List<EmployeeMonthlyAttendanceData> employeeMonthlyAttendanceDataList = EmployeeCommon.convertEmployeeMonthlyEntityToDtoList(employeeMonthlyStatusEntityList);
+            response.setStatusCode(200);
+            response.setMessage("Successfully !");
+            response.setEmployeeMonthlyDataList(employeeMonthlyAttendanceDataList);
+        } catch (Exception e) {
+            response.setStatusCode(400);
+            response.setMessage(e.getMessage());
+        }
+        return response;
+    }
 
 }

@@ -7,8 +7,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface AbsentAdvanceSearchDao {
-	
-	List<EmployeeAbsentEntity> employeeAbsentList(String employeeName, String employeeId, String leave,
+
+    List<EmployeeAbsentEntity> employeeAbsentList(String employeeName, String employeeId, String leave,
                                                   String employeeAbsentDate);
 
 }

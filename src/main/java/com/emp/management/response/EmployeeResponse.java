@@ -1,5 +1,6 @@
 package com.emp.management.response;
 
+import com.emp.management.employeeModel.EmployeeMonthlyStatusEntity;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
@@ -17,6 +18,8 @@ public class EmployeeResponse {
     private EmployeeAttendanceDto employeeAttendanceDetails;
     private List<EmployeeAbsentDetailsDto> employeeAbsentDetailsList;
     private List<EmployeeAttendanceDto> employeeAttendanceDetailsList;
+    private EmployeeMonthlyAttendanceData employeeMonthlyData;
+    private List<EmployeeMonthlyAttendanceData> employeeMonthlyDataList;
 
 
 

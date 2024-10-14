@@ -47,7 +47,7 @@ public class AdminCommon {
         return adminEntity;
     }
 
-    public static List<RegisterDto> convertRegisterToRegisterDtoList(List<AdminEntity> adminEntityList){
+    public static List<RegisterDto> convertRegisterToRegisterDtoList(List<AdminEntity> adminEntityList) {
         return adminEntityList.stream().map(AdminCommon::convertRegisterToRegisterDto).collect(Collectors.toList());
     }
 }

@@ -9,7 +9,7 @@ import com.emp.management.dataModel.AdminEntity;
 @Repository
 public interface RegisterAdvanceSearchDao {
 
-	List<AdminEntity> searchAdminData(Long id, String firstName, String lastName, String username, String createdBy,
-									  String modifyBy);
+    List<AdminEntity> searchAdminData(Long id, String firstName, String lastName, String username, String createdBy,
+                                      String modifyBy);
 
 }

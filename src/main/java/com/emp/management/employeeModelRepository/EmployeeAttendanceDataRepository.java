@@ -1,6 +1,7 @@
 package com.emp.management.employeeModelRepository;
 
 import com.emp.management.employeeModel.EmployeeAttendanceEntity;
+import com.emp.management.employeeModel.EmployeeMonthlyStatusEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -26,6 +27,8 @@ public interface EmployeeAttendanceDataRepository extends JpaRepository<Employee
 
     String ATTENDANCE_EXIT_TIME_CHECK_QUERY ="SELECT exit_time from mraocompany.employee_attendance_data WHERE attendance_date=:date And employee_id=:employeeId";
 
+    String MONTHLY_DATA_QUERY ="select * from mraocompany.employee_attendance_data where employee_id=:empId and month(attendance_date) =:monthName";
+
     @Query(value = ATTENDANCE_DATA_QUERY, nativeQuery = true)
     List<EmployeeAttendanceEntity> getEmployeeAttendanceBySearching(String EmpIdOrName);
 
@@ -38,4 +41,8 @@ public interface EmployeeAttendanceDataRepository extends JpaRepository<Employee
     @Query(value = ATTENDANCE_EXIT_TIME_CHECK_QUERY,nativeQuery = true)
     String existsByAttendanceExitTime(Date date,String employeeId);
 
-}
+
+    @Query(value = MONTHLY_DATA_QUERY,nativeQuery = true)
+     List<EmployeeAttendanceEntity> getEmployeeMonthlyData(String empId,String monthName);
+
+   }

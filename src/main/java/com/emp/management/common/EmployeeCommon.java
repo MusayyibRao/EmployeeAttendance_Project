@@ -3,16 +3,20 @@ package com.emp.management.common;
 import com.emp.management.employeeModel.EmployeeAbsentEntity;
 import com.emp.management.employeeModel.EmployeeAttendanceEntity;
 import com.emp.management.employeeModel.EmployeeEntity;
+import com.emp.management.employeeModel.EmployeeMonthlyStatusEntity;
 import com.emp.management.response.EmployeeAbsentDetailsDto;
 import com.emp.management.response.EmployeeAttendanceDto;
 import com.emp.management.response.EmployeeDto;
+import com.emp.management.response.EmployeeMonthlyAttendanceData;
 import org.apache.commons.codec.binary.Base64;
 
 import java.sql.Blob;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class EmployeeCommon {
 
@@ -143,4 +147,45 @@ public class EmployeeCommon {
         }
         return null;
     }
+
+
+    public static EmployeeMonthlyAttendanceData convertEmployeeMonthlyEntityToDto(EmployeeMonthlyStatusEntity employeeMonthlyStatusEntity) {
+        EmployeeMonthlyAttendanceData employeeMonthlyAttendanceData = new EmployeeMonthlyAttendanceData();
+
+        if (employeeMonthlyStatusEntity != null) {
+            employeeMonthlyAttendanceData.setId(employeeMonthlyStatusEntity.getId());
+            employeeMonthlyAttendanceData.setEmployeeId(employeeMonthlyStatusEntity.getEmployeeId());
+            employeeMonthlyAttendanceData.setPresentNumber(employeeMonthlyStatusEntity.getPresentNumber());
+            employeeMonthlyAttendanceData.setAbsentNumber(employeeMonthlyStatusEntity.getAbsentNumber());
+            employeeMonthlyAttendanceData.setTotalWorkingDays(employeeMonthlyStatusEntity.getTotalWorkingDays());
+            employeeMonthlyAttendanceData.setWfhNumber(employeeMonthlyStatusEntity.getWfhNumber());
+            employeeMonthlyAttendanceData.setLeaveNumber(employeeMonthlyStatusEntity.getLeaveNumber());
+            employeeMonthlyAttendanceData.setMonth(getOnlyMonth(employeeMonthlyStatusEntity.getMonthYear()));
+            return employeeMonthlyAttendanceData;
+        }
+        return null;
+    }
+
+    public static EmployeeMonthlyStatusEntity convertEmployeeMonthlyDtoToEntity(EmployeeMonthlyAttendanceData employeeMonthlyAttendanceData) {
+        EmployeeMonthlyStatusEntity employeeMonthlyStatusEntity = new EmployeeMonthlyStatusEntity();
+        if (employeeMonthlyAttendanceData != null) {
+        }
+        return null;
+    }
+
+    public static List<EmployeeMonthlyAttendanceData> convertEmployeeMonthlyEntityToDtoList(List<EmployeeMonthlyStatusEntity> employeeMonthlyStatusEntityList) {
+
+        List<EmployeeMonthlyAttendanceData> employeeMonthlyAttendanceDataList = new ArrayList<>();
+        if (employeeMonthlyAttendanceDataList != null) {
+
+            return employeeMonthlyStatusEntityList.stream().map(EmployeeCommon::convertEmployeeMonthlyEntityToDto).collect(Collectors.toList());
+        }
+        return null;
+    }
+
+    public static String getOnlyMonth(Date date) {
+        String month = DatePattern.getMonth(date);
+        return CommonMonthsName.getMonthName(month);
+    }
 }
+

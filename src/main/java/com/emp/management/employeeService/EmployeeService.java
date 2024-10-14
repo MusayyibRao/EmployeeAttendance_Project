@@ -29,9 +29,11 @@ public interface EmployeeService {
 
     EmployeeResponse getEmployeeBySearch(String anyDetails);
 
-    EmployeeMonthlyStatusEntity addEmployeeMonthlyAttendanceDetails(EmployeeMonthlyStatusEntity employeeMonthlyStatusEntity);
+    EmployeeResponse addEmployeeMonthlyAttendanceDetails(String empId,String month);
 
-    EmployeeMonthlyStatusEntity updateEmployeeMonthlyDetails(EmployeeMonthlyStatusEntity employeeMonthlyStatusEntity);
+    EmployeeResponse getEmployeeMonthlyAttendanceDetails(String empId,String month);
 
     EmployeeResponse employeeExitTime(String employeeId) throws ParseException;
+
+    EmployeeResponse getAllEmployeeMonthlyAttendanceDetails();
 }

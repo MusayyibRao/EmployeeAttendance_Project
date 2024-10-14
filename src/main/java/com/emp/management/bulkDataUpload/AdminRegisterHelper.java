@@ -16,78 +16,78 @@ import org.springframework.web.multipart.MultipartFile;
 import com.emp.management.dataModel.AdminEntity;
 
 public class AdminRegisterHelper {
-	
-	public static boolean checkExcelFormat(MultipartFile file) {
 
-		String contentType = file.getContentType();
+    public static boolean checkExcelFormat(MultipartFile file) {
 
-		if (contentType.equals("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")) {
-			return true;
-		} else {
-			return false;
-		}
+        String contentType = file.getContentType();
 
-	}
+        if (contentType.equals("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")) {
+            return true;
+        } else {
+            return false;
+        }
 
-	public static List<AdminEntity> convertExcelToListOfProduct(InputStream adminFile, String filename) throws IOException {
-		List<AdminEntity> adminlist = new ArrayList<>();
-		
-		XSSFWorkbook adminWorkbook =  new XSSFWorkbook(adminFile);
+    }
 
-		XSSFSheet sheet = adminWorkbook.getSheet(filename);
+    public static List<AdminEntity> convertExcelToListOfProduct(InputStream adminFile, String filename) throws IOException {
+        List<AdminEntity> adminlist = new ArrayList<>();
 
-		int rowNumber = 0;
-		Iterator<Row> iterator = sheet.iterator();
+        XSSFWorkbook adminWorkbook = new XSSFWorkbook(adminFile);
 
-		while (iterator.hasNext() == true) {
-			Row row = iterator.next();
+        XSSFSheet sheet = adminWorkbook.getSheet(filename);
 
-			if (rowNumber == 0) {
-				rowNumber++;
-				continue;
-			}
+        int rowNumber = 0;
+        Iterator<Row> iterator = sheet.iterator();
 
-			Iterator<Cell> cells = row.iterator();
+        while (iterator.hasNext() == true) {
+            Row row = iterator.next();
 
-			int cid = 0;
+            if (rowNumber == 0) {
+                rowNumber++;
+                continue;
+            }
 
-			AdminEntity adminEntityAdmin = new AdminEntity();
+            Iterator<Cell> cells = row.iterator();
 
-			while (cells.hasNext() == true) {
-				Cell cell = cells.next();
-				switch (cid) {
-				case 0:
-					adminEntityAdmin.setFirstname(cell.getStringCellValue());
-					break;
-				case 1:
-					adminEntityAdmin.setLastname(cell.getStringCellValue());
-					break;
-				case 2:
-					adminEntityAdmin.setEmail(cell.getStringCellValue());
-					break;
-				case 3:
-					String passValue = cell.getStringCellValue();
-					String password = new BCryptPasswordEncoder().encode(passValue);
-					adminEntityAdmin.setPassword(password);
-					break;
-				case 4:
-					adminEntityAdmin.setCreatedBy(cell.getStringCellValue());
-					break;
-				case 5:
-					adminEntityAdmin.setCreatedDate(cell.getDateCellValue());
-					break;
-				case 6:
-					adminEntityAdmin.setModifyBy(cell.getStringCellValue());
-					break;
-				case 7:
-					adminEntityAdmin.setModifyDate(cell.getDateCellValue());
-				default:
-					break;
-				}
-				cid++;
-			}
-			adminlist.add(adminEntityAdmin);
-		}
-		return adminlist;
-	}
+            int cid = 0;
+
+            AdminEntity adminEntityAdmin = new AdminEntity();
+
+            while (cells.hasNext() == true) {
+                Cell cell = cells.next();
+                switch (cid) {
+                    case 0:
+                        adminEntityAdmin.setFirstname(cell.getStringCellValue());
+                        break;
+                    case 1:
+                        adminEntityAdmin.setLastname(cell.getStringCellValue());
+                        break;
+                    case 2:
+                        adminEntityAdmin.setEmail(cell.getStringCellValue());
+                        break;
+                    case 3:
+                        String passValue = cell.getStringCellValue();
+                        String password = new BCryptPasswordEncoder().encode(passValue);
+                        adminEntityAdmin.setPassword(password);
+                        break;
+                    case 4:
+                        adminEntityAdmin.setCreatedBy(cell.getStringCellValue());
+                        break;
+                    case 5:
+                        adminEntityAdmin.setCreatedDate(cell.getDateCellValue());
+                        break;
+                    case 6:
+                        adminEntityAdmin.setModifyBy(cell.getStringCellValue());
+                        break;
+                    case 7:
+                        adminEntityAdmin.setModifyDate(cell.getDateCellValue());
+                    default:
+                        break;
+                }
+                cid++;
+            }
+            adminlist.add(adminEntityAdmin);
+        }
+        return adminlist;
+    }
 }

@@ -12,10 +12,8 @@ public class DatePattern {
             return null;
         }
         DateFormat targetFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String formattedDate = targetFormat.format(date);
-
-        return formattedDate;
-
+        String formattedDateInString = targetFormat.format(date);
+        return formattedDateInString;
     }
 
 
@@ -23,31 +21,56 @@ public class DatePattern {
         if (date == null) {
             return null;
         }
-        System.out.println("date----: " + date);
         DateFormat targetFormat = new SimpleDateFormat("yyyy-MM-dd");
-        Date date1 = targetFormat.parse(date);
-        System.out.println(date1);
-        return date1;
-
+        Date formatedDate = targetFormat.parse(date);
+        return formatedDate;
     }
 
-
-    public static String timeFormat(Date date){
-        if(date ==null){
+    public static String timeFormat(Date date) {
+        if (date == null) {
             return null;
         }
         DateFormat target = new SimpleDateFormat("h:mm:ss a");
-        String formatted = target.format(date);
-        return formatted;
+        String formattedTimeInString = target.format(date);
+        return formattedTimeInString;
     }
 
     public static Date timeFormatInDate(String date) throws ParseException {
-        if(date ==null){
+        if (date == null) {
             return null;
         }
         DateFormat target = new SimpleDateFormat("h:mm:ss a");
-       // String formatted = target.format(date);
-        Date date1 = target.parse(date);
-        return date1;
+        // String formatted = target.format(date);
+        Date formattedTime = target.parse(date);
+        return formattedTime;
+    }
+
+    public static String getMonthYearFormat(Date date) throws ParseException {
+
+        if (date == null) {
+            return null;
+        }
+        DateFormat targetFormat = new SimpleDateFormat("MM-yyyy");
+        String formattedMonthYearInString = targetFormat.format(date);
+        return formattedMonthYearInString;
+    }
+
+    public static Date getMonthYearFormatInDate(String date) throws ParseException {
+
+        if (date == null) {
+            return null;
+        }
+        DateFormat targetFormat = new SimpleDateFormat("MM-yyyy");
+        Date formattedMonthYear = targetFormat.parse(date);
+        return formattedMonthYear;
+    }
+
+    public static String getMonth(Date date) {
+        if (date == null) {
+            return null;
+        }
+        DateFormat targetFormat = new SimpleDateFormat("MM");
+        String formattedMonth = targetFormat.format(date);
+        return formattedMonth;
     }
 }
