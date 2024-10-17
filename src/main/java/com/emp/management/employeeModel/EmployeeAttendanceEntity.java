@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import java.util.Date;
 
 
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -16,20 +15,24 @@ import java.util.Date;
 @Table(name = "employeeAttendanceData")
 public class EmployeeAttendanceEntity {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-	private String employeeName;
-//	@Column(unique = true,nullable = false)
-	private String employeeId;
-	@Temporal(TemporalType.DATE)
-	private Date attendanceDate;
-	@Temporal(TemporalType.TIME)
-	private Date entryTime;
-	@Temporal(TemporalType.TIME)
-	private Date exitTime;
-	private String attendanceType;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String employeeName;
+
+    private String employeeId;
+
+    @Temporal(TemporalType.DATE)
+    private Date attendanceDate;
+
+    @Temporal(TemporalType.TIME)
+    private Date entryTime;
+
+    @Temporal(TemporalType.TIME)
+    private Date exitTime;
+
+    private String attendanceType;
 
 
-	
 }

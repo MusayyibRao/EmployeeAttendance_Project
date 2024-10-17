@@ -39,16 +39,12 @@ public class EmployeeMonthlyStatusController {
 
     /*__________________________________________GET ALL MONTHLY ATTENDANCE API______________________________________*/
 
-    @GetMapping("get_all_employee_attendance_data")
+    @GetMapping("/get_all_employee_attendance_data")
     public ResponseEntity<EmployeeResponse> getAllEmployeeAttendanceMonthlyData() {
         EmployeeResponse response = employeeService.getAllEmployeeMonthlyAttendanceDetails();
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 
-	/*@GetMapping("{pageNo}/{pageSize}")
-	public List<EmployeeMonthlyStatusEntity> getAllEmployeeMonthlyStatus(@PathVariable int pageNo,
-			@PathVariable int pageSize) {
-		return iRegisterService.findEmployeeMonthlyStatusPage(pageNo, pageSize);
-	}*/
+
 
 }

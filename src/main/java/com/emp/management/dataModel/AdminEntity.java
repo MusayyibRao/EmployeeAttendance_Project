@@ -23,15 +23,18 @@ public class AdminEntity implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
     private String firstname;
+
     private String lastname;
+
     @Column(unique = true, nullable = false)
     private String email;
 
-    //	private String username;
     private String password;
 
     private String createdBy;
+
     private String modifyBy;
 
     @Column(name = "created_date")
@@ -41,7 +44,7 @@ public class AdminEntity implements UserDetails {
     @Column(name = "modify_date")
     @Temporal(TemporalType.DATE)
     private Date modifyDate;
-
+    
     private String role;
 
 

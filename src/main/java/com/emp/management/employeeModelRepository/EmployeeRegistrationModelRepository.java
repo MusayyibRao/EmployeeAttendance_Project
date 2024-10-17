@@ -10,10 +10,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface EmployeeRegistrationModelRepository extends JpaRepository<EmployeeEntity, Long>,
-        PagingAndSortingRepository<EmployeeEntity, Long> {
+public interface EmployeeRegistrationModelRepository extends JpaRepository<EmployeeEntity, Long> {
 
-//    EmployeeRegistrationEntityModel findByEmail(String email);
+    String EMPLOYEE_DATA_QUERY = "select * from mraocompany.employee_data as a where a.employee_id like %?1%\n" +
+            " OR a.email like %?1% OR a.employee_address like %1% OR a.employee_first_name like %1%\n" +
+            " OR a.employee_last_name like %1%";
 
     boolean existsByEmail(String email);
 
@@ -25,11 +26,6 @@ public interface EmployeeRegistrationModelRepository extends JpaRepository<Emplo
 
     @Query(value = "select Max(id) from mraocompany.employee_data", nativeQuery = true)
     Optional<Long> maxId();
-
-
-    String EMPLOYEE_DATA_QUERY = "select * from mraocompany.employee_data as a where a.employee_id like %?1%\n" +
-            " OR a.email like %?1% OR a.employee_address like %1% OR a.employee_first_name like %1%\n" +
-            " OR a.employee_last_name like %1%";
 
     @Query(value = EMPLOYEE_DATA_QUERY, nativeQuery = true)
     List<EmployeeEntity> getEmployeeBySearching(String anyDetails);

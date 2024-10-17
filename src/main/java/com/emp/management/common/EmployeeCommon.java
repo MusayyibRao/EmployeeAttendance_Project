@@ -66,9 +66,13 @@ public class EmployeeCommon {
 
     public static List<EmployeeDto> convertEmployeeListToEmployeeDtoList(List<EmployeeEntity> employeeEntityList) throws SQLException {
         List<EmployeeDto> list = new ArrayList<>();
-        for (EmployeeEntity employeeEntity : employeeEntityList) {
-            EmployeeDto employeeDto = convertEmployeeEntityToEmployeeDto(employeeEntity);
-            list.add(employeeDto);
+        try {
+            for (EmployeeEntity employeeEntity : employeeEntityList) {
+                EmployeeDto employeeDto = convertEmployeeEntityToEmployeeDto(employeeEntity);
+                list.add(employeeDto);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return list;
     }
@@ -105,9 +109,13 @@ public class EmployeeCommon {
 
     public static List<EmployeeAttendanceDto> convertEmpAttendanceToDto(List<EmployeeAttendanceEntity> employeeAttendanceEntities) throws ParseException {
         List<EmployeeAttendanceDto> list = new ArrayList<>();
-        for (EmployeeAttendanceEntity employeeAttendanceEntity : employeeAttendanceEntities) {
-            EmployeeAttendanceDto employeeAttendanceDto = convertEmployeeAttendanceEntityToEmployeeAttendanceDto(employeeAttendanceEntity);
-            list.add(employeeAttendanceDto);
+        try {
+            for (EmployeeAttendanceEntity employeeAttendanceEntity : employeeAttendanceEntities) {
+                EmployeeAttendanceDto employeeAttendanceDto = convertEmployeeAttendanceEntityToEmployeeAttendanceDto(employeeAttendanceEntity);
+                list.add(employeeAttendanceDto);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return list;
 //          return employeeAttendanceEntities.stream().map(EmployeeCommon::convertEmployeeAttendanceEntityToEmployeeAttendanceDto).collect(Collectors.toList());
@@ -151,19 +159,23 @@ public class EmployeeCommon {
 
     public static EmployeeMonthlyAttendanceData convertEmployeeMonthlyEntityToDto(EmployeeMonthlyStatusEntity employeeMonthlyStatusEntity) {
         EmployeeMonthlyAttendanceData employeeMonthlyAttendanceData = new EmployeeMonthlyAttendanceData();
-
-        if (employeeMonthlyStatusEntity != null) {
-            employeeMonthlyAttendanceData.setId(employeeMonthlyStatusEntity.getId());
-            employeeMonthlyAttendanceData.setEmployeeId(employeeMonthlyStatusEntity.getEmployeeId());
-            employeeMonthlyAttendanceData.setPresentNumber(employeeMonthlyStatusEntity.getPresentNumber());
-            employeeMonthlyAttendanceData.setAbsentNumber(employeeMonthlyStatusEntity.getAbsentNumber());
-            employeeMonthlyAttendanceData.setTotalWorkingDays(employeeMonthlyStatusEntity.getTotalWorkingDays());
-            employeeMonthlyAttendanceData.setWfhNumber(employeeMonthlyStatusEntity.getWfhNumber());
-            employeeMonthlyAttendanceData.setLeaveNumber(employeeMonthlyStatusEntity.getLeaveNumber());
-            employeeMonthlyAttendanceData.setMonth(getOnlyMonth(employeeMonthlyStatusEntity.getMonthYear()));
-            return employeeMonthlyAttendanceData;
+        try {
+            if (employeeMonthlyStatusEntity != null) {
+                employeeMonthlyAttendanceData.setId(employeeMonthlyStatusEntity.getId());
+                employeeMonthlyAttendanceData.setEmployeeId(employeeMonthlyStatusEntity.getEmployeeId());
+                employeeMonthlyAttendanceData.setPresentNumber(employeeMonthlyStatusEntity.getPresentNumber());
+                employeeMonthlyAttendanceData.setAbsentNumber(employeeMonthlyStatusEntity.getAbsentNumber());
+                employeeMonthlyAttendanceData.setTotalWorkingDays(employeeMonthlyStatusEntity.getTotalWorkingDays());
+                employeeMonthlyAttendanceData.setWfhNumber(employeeMonthlyStatusEntity.getWfhNumber());
+                employeeMonthlyAttendanceData.setLeaveNumber(employeeMonthlyStatusEntity.getLeaveNumber());
+                employeeMonthlyAttendanceData.setMonth(getOnlyMonth(employeeMonthlyStatusEntity.getMonthYear()));
+                return employeeMonthlyAttendanceData;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            ;
         }
-        return null;
+        return employeeMonthlyAttendanceData;
     }
 
     public static EmployeeMonthlyStatusEntity convertEmployeeMonthlyDtoToEntity(EmployeeMonthlyAttendanceData employeeMonthlyAttendanceData) {
@@ -174,13 +186,18 @@ public class EmployeeCommon {
     }
 
     public static List<EmployeeMonthlyAttendanceData> convertEmployeeMonthlyEntityToDtoList(List<EmployeeMonthlyStatusEntity> employeeMonthlyStatusEntityList) {
-
-        List<EmployeeMonthlyAttendanceData> employeeMonthlyAttendanceDataList = new ArrayList<>();
-        if (employeeMonthlyAttendanceDataList != null) {
-
-            return employeeMonthlyStatusEntityList.stream().map(EmployeeCommon::convertEmployeeMonthlyEntityToDto).collect(Collectors.toList());
+        List<EmployeeMonthlyAttendanceData> list = new ArrayList<>();
+        try {
+            for (EmployeeMonthlyStatusEntity employeeMonthlyStatusEntity : employeeMonthlyStatusEntityList) {
+                EmployeeMonthlyAttendanceData employeeMonthlyAttendanceData = convertEmployeeMonthlyEntityToDto(employeeMonthlyStatusEntity);
+                list.add(employeeMonthlyAttendanceData);
+            }
+        } catch (Exception e) {
+            e.getMessage();
         }
-        return null;
+        return list;
+
+        // return employeeMonthlyStatusEntityList.stream().map(EmployeeCommon::convertEmployeeMonthlyEntityToDto).collect(Collectors.toList());
     }
 
     public static String getOnlyMonth(Date date) {

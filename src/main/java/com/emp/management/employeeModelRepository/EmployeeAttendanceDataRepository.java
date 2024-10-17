@@ -18,31 +18,37 @@ public interface EmployeeAttendanceDataRepository extends JpaRepository<Employee
 
     String ATTENDANCE_DATA_QUERY = "select * from mraocompany.employee_attendance_data as a where a.employee_id like %?1%\n" +
             " OR a.employee_name like %?1%";
-    String ATTENDANCE_CHECK_QUERY ="SELECT CASE WHEN EXISTS (SELECT * FROM mraocompany.employee_attendance_data WHERE attendance_date=:date And employee_id=:employeeId)\n" +
+    String ATTENDANCE_CHECK_QUERY = "SELECT CASE WHEN EXISTS (SELECT * FROM mraocompany.employee_attendance_data WHERE attendance_date=:date And employee_id=:employeeId)\n" +
+            "    THEN 'TRUE'\n" +
+            "    ELSE 'FALSE'\n" +
+            "END";
+    String EMP_ATTENDANCE_CHECK_QUERY = "SELECT CASE WHEN EXISTS (SELECT * FROM mraocompany.employee_attendance_data WHERE MONTH(attendance_date)=:month And employee_id=:employeeId)\n" +
             "    THEN 'TRUE'\n" +
             "    ELSE 'FALSE'\n" +
             "END";
 
-    String ATTENDANCE_DATA_QUERY_BY_DATE="SELECT * FROM mraocompany.employee_attendance_data WHERE attendance_date=:date And employee_id=:employeeId";
+    String ATTENDANCE_DATA_QUERY_BY_DATE = "SELECT * FROM mraocompany.employee_attendance_data WHERE attendance_date=:date And employee_id=:employeeId";
 
-    String ATTENDANCE_EXIT_TIME_CHECK_QUERY ="SELECT exit_time from mraocompany.employee_attendance_data WHERE attendance_date=:date And employee_id=:employeeId";
+    String ATTENDANCE_EXIT_TIME_CHECK_QUERY = "SELECT exit_time from mraocompany.employee_attendance_data WHERE attendance_date=:date And employee_id=:employeeId";
 
-    String MONTHLY_DATA_QUERY ="select * from mraocompany.employee_attendance_data where employee_id=:empId and month(attendance_date) =:monthName";
+    String MONTHLY_DATA_QUERY = "select * from mraocompany.employee_attendance_data where employee_id=:empId and month(attendance_date) =:monthName";
 
     @Query(value = ATTENDANCE_DATA_QUERY, nativeQuery = true)
     List<EmployeeAttendanceEntity> getEmployeeAttendanceBySearching(String EmpIdOrName);
 
-    @Query(value = ATTENDANCE_CHECK_QUERY,nativeQuery = true)
+    @Query(value = ATTENDANCE_CHECK_QUERY, nativeQuery = true)
     boolean existsByAttendanceDate(Date date, String employeeId);
 
-    @Query(value = ATTENDANCE_DATA_QUERY_BY_DATE,nativeQuery = true)
+    @Query(value = ATTENDANCE_DATA_QUERY_BY_DATE, nativeQuery = true)
     Optional<EmployeeAttendanceEntity> getEmployeeDataByDate(Date date, String employeeId);
 
-    @Query(value = ATTENDANCE_EXIT_TIME_CHECK_QUERY,nativeQuery = true)
-    String existsByAttendanceExitTime(Date date,String employeeId);
+    @Query(value = ATTENDANCE_EXIT_TIME_CHECK_QUERY, nativeQuery = true)
+    String existsByAttendanceExitTime(Date date, String employeeId);
 
+    @Query(value = EMP_ATTENDANCE_CHECK_QUERY, nativeQuery = true)
+    boolean existsByEmpAttendanceDate(String month, String employeeId);
 
-    @Query(value = MONTHLY_DATA_QUERY,nativeQuery = true)
-     List<EmployeeAttendanceEntity> getEmployeeMonthlyData(String empId,String monthName);
+    @Query(value = MONTHLY_DATA_QUERY, nativeQuery = true)
+    Optional<List<EmployeeAttendanceEntity>> getEmployeeMonthlyData(String empId, String monthName);
 
-   }
+}

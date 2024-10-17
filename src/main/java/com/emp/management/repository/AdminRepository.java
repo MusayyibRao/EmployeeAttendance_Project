@@ -13,8 +13,10 @@ import java.util.Optional;
 @Repository
 public interface AdminRepository extends JpaRepository<AdminEntity, Long> {
 
-    //	@Query("SELECT register FROM Register register WHERE register.email=?1")
+
     Optional<AdminEntity> findByEmail(String email);
+
+    boolean existsByEmail(String email);
 
     @Modifying
     @Transactional
@@ -22,8 +24,6 @@ public interface AdminRepository extends JpaRepository<AdminEntity, Long> {
             "SET a.firstname =:firstname, a.lastname =:lastname ,a.password=:password \n" +
             "WHERE email=:email", nativeQuery = true)
     void updateAdmin(String firstname, String lastname, String password, String email);
-
-    boolean existsByEmail(String email);
 
     @Modifying
     @Transactional

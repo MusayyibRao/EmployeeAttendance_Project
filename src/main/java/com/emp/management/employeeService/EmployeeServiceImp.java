@@ -249,7 +249,10 @@ public class EmployeeServiceImp implements EmployeeService {
             if (mon > 12 || mon < 1) {
                 throw new RuntimeException("Please enter valid month");
             }
-            List<EmployeeAttendanceEntity> employeeAttendance = employeeAttendanceDataRepository.getEmployeeMonthlyData(empId, month);
+            if (!employeeAttendanceDataRepository.existsByEmpAttendanceDate(month, empId)) {
+                throw new RuntimeException("Employee Attendance Not Exists !");
+            }
+            List<EmployeeAttendanceEntity> employeeAttendance = employeeAttendanceDataRepository.getEmployeeMonthlyData(empId, month).orElseThrow(() -> new RuntimeException("employee Attendance Not exists !"));
             System.out.println("employee_attendance_data: " + employeeAttendance);
             EmployeeMonthlyStatusEntity employeeMonthlyStatusEntity = calculateEmployeeMonthlyData(employeeAttendance);
             if (employeeMonthlyStatusRepository.existsByEmployeeId(empId)) {
@@ -369,10 +372,6 @@ public class EmployeeServiceImp implements EmployeeService {
         employeeMonthlyStatusEntity.setLeaveNumber(String.valueOf(absentEmp));
         employeeMonthlyStatusEntity.setTotalWorkingDays(String.valueOf(totalWorkingDays));
         employeeMonthlyStatusEntity.setWfhNumber(String.valueOf(wfh));
-//        String dateInStringFormat = DatePattern.formatDate(monthlyDate);
-//        System.out.println("dateInStringFormat: "+dateInStringFormat);
-        System.out.println("---------------------------------------------");
-        System.out.println("getMonth: " + DatePattern.getMonthYearFormat(monthlyDate));
         String dateInStringFormat = DatePattern.getMonthYearFormat(monthlyDate);
         employeeMonthlyStatusEntity.setMonthYear(DatePattern.getMonthYearFormatInDate(dateInStringFormat));
 
@@ -385,7 +384,9 @@ public class EmployeeServiceImp implements EmployeeService {
         EmployeeResponse response = new EmployeeResponse();
         try {
             List<EmployeeMonthlyStatusEntity> employeeMonthlyStatusEntityList = employeeMonthlyStatusRepository.findAll();
+            System.out.println("employeeMonthlyStatusEntityList: " + employeeMonthlyStatusEntityList);
             List<EmployeeMonthlyAttendanceData> employeeMonthlyAttendanceDataList = EmployeeCommon.convertEmployeeMonthlyEntityToDtoList(employeeMonthlyStatusEntityList);
+            System.out.println("employeeMonthlyAttendanceDataList: " + employeeMonthlyAttendanceDataList);
             response.setStatusCode(200);
             response.setMessage("Successfully !");
             response.setEmployeeMonthlyDataList(employeeMonthlyAttendanceDataList);

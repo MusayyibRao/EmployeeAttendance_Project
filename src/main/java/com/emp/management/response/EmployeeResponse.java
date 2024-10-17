@@ -22,6 +22,4 @@ public class EmployeeResponse {
     private List<EmployeeMonthlyAttendanceData> employeeMonthlyDataList;
 
 
-
-
 }
